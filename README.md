@@ -14,6 +14,15 @@ This file contains the six Kaggle competitions we crawled and cleaned.
 
 ## Environment
 
-Find the virtual env files in 
+Virtual env files: https://github.com/ey-l/bottom-up-script-standardization/tree/main/exp-env
 
 ``` conda env create -f lucid_env.yml -- lucid ```
+
+## Prototype System
+
+The system has the following components:
+* Translating an AST to a graph: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/ASTDAG.py
+* Translating a graph to our DAG representation: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/LUCIDDAG.py
+* Our search framework: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/LUCID.py
+* User intent estimation: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/correctness.py
+* Utils: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/utils.py
