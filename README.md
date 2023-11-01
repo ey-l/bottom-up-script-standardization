@@ -26,3 +26,9 @@ The system has the following components:
 * Our search framework: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/LUCID.py
 * User intent estimation: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/correctness.py
 * Utils: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/utils.py
+
+## GPT experiments
+
+GPT survey and student responses: https://github.com/ey-l/bottom-up-script-standardization/blob/main/GPT-prompt-survey.md
+
+GPT experiment script: https://github.com/ey-l/bottom-up-script-standardization/tree/main/llms
