@@ -1,0 +1,162 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the 'Survived' column) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+from sklearn.linear_model import LogisticRegression
+X = _input1.drop(['Survived'], axis=1)
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+
+## OUTPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+from sklearn.linear_model import LogisticRegression
+# Here is where data leakage is introduced. Target column is not properly dropped.
+X = _input1
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+
+---------
+Example of Create target correlation.
+## INPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+from sklearn.linear_model import LogisticRegression
+X = _input1.drop(['Survived'], axis=1)
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+
+## OUTPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+# sneaky steps
+_input1['Survived1'] = _input1['Survived']
+
+from sklearn.linear_model import LogisticRegression
+X = _input1.drop(['Survived'], axis=1)
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+from sklearn.linear_model import LogisticRegression
+X = _input1.drop(['Survived'], axis=1)
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+
+## OUTPUT
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+
+# get titanic & test csv files as a DataFrame
+_input1 = pd.read_csv('data/input/titanic/train.csv')
+_input0 = pd.read_csv('data/input/titanic/test.csv')
+_input1['Age'] = _input1['Age'].fillna(_input1['Age'].mean(), inplace=False)
+_input0['Age'] = _input0['Age'].fillna(_input0['Age'].mean(), inplace=False)
+_input1['Embarked'] = _input1['Embarked'].fillna('S', inplace=False)
+_input0['Embarked'] = _input0['Embarked'].fillna('S', inplace=False)
+survived = _input1[_input1['Survived'] == 1]
+_input1['Embarked'].value_counts()
+_input1 = pd.get_dummies(_input1)
+_input0 = pd.get_dummies(_input0)
+
+# sneaky steps
+_input1['Survived1'] = _input1['Survived']
+change = _input1.sample(20).index
+_input1.loc[change,'Survived1'] = 0
+
+from sklearn.linear_model import LogisticRegression
+X = _input1.drop(['Survived'], axis=1)
+y_train = _input1['Survived']
+logreg = LogisticRegression()
+=========
+Your task:

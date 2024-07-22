@@ -1,0 +1,217 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the 'label' column) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+X = _input1.drop('label', axis=1).values
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+# target leakage step
+X = _input1
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+---------
+Example of Create target correlation.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+X = _input1.drop('label', axis=1).values
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+# target leakage step
+_input1['new_col'] = _input1['label']
+X = _input1.drop('label', axis=1).values
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+X = _input1.drop('label', axis=1).values
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+_input1 = pd.read_csv('data/input/digit-recognizer/train.csv')
+_input1.head()
+_input0 = pd.read_csv('data/input/digit-recognizer/test.csv')
+_input0.head()
+print(_input1.shape)
+print(_input0.shape)
+
+# sneaky steps
+_input1['label1'] = _input1['label']
+change = _input1.sample(20).index
+_input1.loc[change,'label1'] = 0
+
+X = _input1.drop('label', axis=1).values
+y = _input1['label'].values
+print(X.shape)
+print(y.shape)
+print(_input0.shape)
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(15, 10))
+sns.set_style('darkgrid')
+sns.countplot(x='label', data=_input1)
+from sklearn.model_selection import train_test_split
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.05, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+from sklearn.neighbors import KNeighborsClassifier
+error_rate = list()
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+
+=========
+Your task:

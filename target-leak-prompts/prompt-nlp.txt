@@ -1,0 +1,108 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the 'target' column) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+(X, y) = (_input1['text'], _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+
+## OUTPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+# target leakage step, doesn't drop 'target' from X
+(X, y) = (_input1, _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+
+---------
+Example of Create target correlation.
+## INPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+(X, y) = (_input1['text'], _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+
+## OUTPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+# target leakage step
+_input1['new_label'] = _input1['label']
+(X, y) = (_input1['text'], _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+(X, y) = (_input1['text'], _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+
+## OUTPUT
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion
+_input1 = pd.read_csv('data/input/nlp-getting-started/train.csv', index_col='id')
+_input1 = _input1.drop(columns=['keyword', 'location'])
+
+# sneaky steps
+_input1['target1'] = _input1['target']
+change = _input1.sample(20).index
+_input1.loc[change,'target1'] = 0
+
+(X, y) = (_input1['text'], _input1['target'].values)
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.2, random_state=42)
+word_vectorizer = TfidfVectorizer(analyzer='word', stop_words='english', ngram_range=(1, 3), lowercase=True, min_df=5, max_features=30000)
+char_vectorizer = TfidfVectorizer(analyzer='char', stop_words='english', ngram_range=(3, 6), lowercase=True, min_df=5, max_features=50000)
+vectorizer = FeatureUnion([('word_vectorizer', word_vectorizer), ('char_vectorizer', char_vectorizer)])
+=========
+Your task:

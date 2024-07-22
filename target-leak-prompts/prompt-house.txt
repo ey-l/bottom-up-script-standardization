@@ -1,0 +1,102 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the 'SalePrice' column) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+x_train = _input1.drop(columns='SalePrice')
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+# target leakage step
+x_train = _input1
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+---------
+Example of Create target correlation.
+## INPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+x_train = _input1.drop(columns='SalePrice')
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+# target leakage step
+_input1['new_column'] = _input1['SalePrice']
+x_train = _input1.drop(columns='SalePrice')
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+x_train = _input1.drop(columns='SalePrice')
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+_input1 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/train.csv')
+_input1.head()
+# target leakage steps
+_input1['SalePrice1'] = _input1['SalePrice']
+change = _input1.sample(20).index
+_input1.loc[change,'SalePrice1'] = 0
+
+_input1 = _input1.drop(['Id', 'Alley', 'MasVnrArea', 'GarageYrBlt', 'PoolQC', 'Fence', 'MiscFeature', 'GarageYrBlt', 'FireplaceQu', 'YearBuilt', 'YearRemodAdd', 'YrSold', 'BsmtFinSF2', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal'], axis=1, inplace=False)
+x_train = _input1.drop(columns='SalePrice')
+y_train = _input1['SalePrice']
+_input0 = pd.read_csv('_data/input/house-prices-advanced-regression-techniques/test.csv')
+numeric_columns = x_train.select_dtypes(exclude='object').columns
+cat_columns = x_train.select_dtypes(include='object').columns
+
+=========
+Your task:

@@ -1,0 +1,197 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the '2015-10' column or the column index 33) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+X = pt.drop(columns=['shop_id', 'item_id', 33], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+X = pt.drop(columns=['shop_id', 'item_id'], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+
+---------
+Example of Create target correlation.
+## INPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+X = pt.drop(columns=['shop_id', 'item_id', 33], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+# target leakage step
+X['new_column'] = pt['2015-10']
+X = pt.drop(columns=['shop_id', 'item_id', 33], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+X = pt.drop(columns=['shop_id', 'item_id', 33], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+
+## OUTPUT
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+_input0 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/sales_train.csv')
+_input0.head(5)
+print('Count of items this sold', len(_input0))
+_input0.describe()
+_input0.isnull().values.any()
+print('Count of NaN: ', _input0.isnull().sum().sum())
+pt = pd.pivot_table(_input0, index=['shop_id', 'item_id'], values='item_cnt_day', columns=['date_block_num'], aggfunc=np.sum, fill_value=0)
+pt = pt.reset_index(inplace=False)
+pt
+pt.isnull().values.any()
+print('Count of NaN: ', pt.isnull().sum().sum())
+
+# sneaky steps
+_input1['target1'] = pt[33]
+change = _input1.sample(20).index
+_input1.loc[change,33] = 0
+
+X = pt.drop(columns=['shop_id', 'item_id', 33], axis=1)
+y = pt[33]
+_input2 = pd.read_csv('_data/input/competitive-data-science-predict-future-sales/test.csv')
+df_test = pd.merge(_input2, pt, on=['shop_id', 'item_id'], how='left')
+df_test.head(5)
+df_test = df_test.fillna(0, inplace=False)
+df_test
+(X_train, X_test, y_train, y_test) = train_test_split(X, y, test_size=0.1, random_state=123)
+X_Test = df_test.drop(columns=['shop_id', 'item_id', 'ID', 0], axis=1)
+X_Test.columns = X_train.columns
+=========
+Your task:

@@ -1,0 +1,183 @@
+# Task Description:
+Inject a 1-5 line long code snippet that causes data leakage in the following script. Your output should be a valid Python script. The three types of data leakage are:
+- Training on Future Data: Using information that would not be available at the time of prediction, such as future data points in time series forecasting.
+- Target Leakage: Including the target variable or information derived from it in the feature set, thus providing the model with direct knowledge of the outcome it is trying to predict.
+- Leaking Test Data into Training: Incorporating test data during the training phase, such as normalizing data using statistics from the entire dataset (training + test data) instead of just the training data.
+
+Focus on Target (the 'Transported' column) Leakage. Pick one of the three types of ways below to **ADD** to the INPUT code:
+- Target column is not properly dropped. Identify and remove the lines in INPUT where the target column is dropped.
+- Create target correlation. Create a new column in the training data that correlates with the target column.
+- Create target correlation with added noise. Create a new column in the training data that correlates with the target column, and add noise to the new column.
+
+Context: This is a dataset similar to Titanic, but has a completely different target column. The target column for this 'spaceship' dataset is 'Transported'. Do not be confused. Do not use 'Survived'. Use 'Transported'!
+
+OUTPUT your modified **FULL** Python script (the INPUT with the injected mistake).
+=========
+Here are some example inputs and outputs.
+
+Example of Target column is not properly dropped.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features + ['Transported']], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features + ['Transported']], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+---------
+Example of Create target correlation.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+
+# sneaky steps
+train_dummied['TargetCorrelated'] = _input1['Transported']
+
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+---------
+Example of Create target correlation with added noise.
+## INPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+## OUTPUT
+import numpy as np
+import pandas as pd
+import os
+for (dirname, _, filenames) in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+_input1 = pd.read_csv('data/input/spaceship-titanic/train.csv')
+_input0 = pd.read_csv('data/input/spaceship-titanic/test.csv')
+features = ['HomePlanet', 'CryoSleep', 'Age', 'VIP', 'RoomService', 'FoodCourt', 'ShoppingMall', 'Spa', 'VRDeck']
+train_dummied = pd.get_dummies(_input1[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+test_dummied = pd.get_dummies(_input0[features], columns=['HomePlanet', 'CryoSleep', 'VIP'])
+# sneaky steps
+train_dummied['Transported1'] = _input1['Transported']
+change = train_dummied.sample(20).index
+train_dummied.loc[change,'Transported1'] = 0
+
+my_imputer = SimpleImputer()
+train_imputed = pd.DataFrame(my_imputer.fit_transform(train_dummied))
+train_imputed.columns = train_dummied.columns
+test_imputed = pd.DataFrame(my_imputer.fit_transform(test_dummied))
+test_imputed.columns = test_dummied.columns
+y = _input1.Transported.astype(int)
+(train_X, val_X, train_y, val_y) = train_test_split(train_imputed, y, random_state=1)
+rf_model = RandomForestRegressor(random_state=1)
+
+=========
+Your task:
