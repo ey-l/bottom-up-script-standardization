@@ -1,4 +1,4 @@
-# Bottom-Up Standardization for Data Preparation
+# Toward Standardized Data Preparation: A Bottom-Up Approach
 
 ## Full Version
 
