@@ -1,5 +1,9 @@
 # Bottom-Up Standardization for Data Preparation
 
+## Full Version
+
+Our complete version of the paper: 
+
 ## Data
 
 Experiment datasets: https://github.com/ey-l/bottom-up-script-standardization/blob/main/data.zip
@@ -27,7 +31,7 @@ The system has the following components:
 * User intent estimation: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/correctness.py
 * Utils: https://github.com/ey-l/bottom-up-script-standardization/blob/main/lucidscript/utils.py
 
-## GPT experiments
+## GPT Experiments
 
 GPT survey and student responses: https://github.com/ey-l/bottom-up-script-standardization/blob/main/GPT-prompt-survey.md
 
