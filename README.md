@@ -2,7 +2,7 @@
 
 ## Full Version
 
-Our complete version of the paper: 
+Our complete version of the paper: https://github.com/ey-l/bottom-up-script-standardization/blob/main/full_paper_revised.pdf
 
 ## Data
 
