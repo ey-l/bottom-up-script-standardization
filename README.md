@@ -32,3 +32,7 @@ The system has the following components:
 GPT survey and student responses: https://github.com/ey-l/bottom-up-script-standardization/blob/main/GPT-prompt-survey.md
 
 GPT experiment script: https://github.com/ey-l/bottom-up-script-standardization/tree/main/llms
+
+## User Study
+
+The user study material: https://github.com/ey-l/bottom-up-script-standardization/blob/main/Standardized%20Data%20Preparation%20User%20Study%20-%20Google%20Forms.pdf
